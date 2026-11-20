@@ -1,0 +1,28 @@
+// use prisma-8
+
+model User {
+ id String @id @onCreate(cuid(2))
+ name String
+ email String @unique
+ password String
+
+ refreshTokens RefreshToken[]
+
+ createdAt DateTime @default(now())
+ updatedAt DateTime @onUpdate(now()) @default(now())
+}
+
+model RefreshToken {
+  id String @id @onCreate(cuid(2))
+  tokenHash String @unique
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
